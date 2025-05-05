@@ -14,6 +14,7 @@ def create_table():
             name TEXT NOT NULL,
             description TEXT NOT NULL,
             priority INTEGER NOT NULL,
+            current_streak INTEGER NOT NULL,
             periodicity TEXT CHECK(periodicity IN ('daily', 'weekly', 'monthly')) NOT NULL,
             created_at TEXT NOT NULL
         );

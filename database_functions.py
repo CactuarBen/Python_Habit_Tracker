@@ -2,11 +2,11 @@ from datetime import datetime
 from database import *
 from habit import *
 
-def create_habit(name, description, priority, periodicity, created_at):
+def create_habit(name, description, priority, current_streak, periodicity, created_at):
     with create_connection() as connection:
         cursor = connection.cursor()
-        cursor.execute("INSERT INTO habits (name, description, priority, periodicity, created_at) VALUES (?, ?, ?, ?, ?)",
-                       (name, description, priority, periodicity, datetime.now().isoformat()))
+        cursor.execute("INSERT INTO habits (name, description, priority, current_streak, periodicity, created_at) VALUES (?, ?, ?, ?, ?, ?)",
+                       (name, description, priority, current_streak, periodicity, datetime.now().isoformat()))
         connection.commit()
 
 def get_habit(habitId):
