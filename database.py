@@ -11,10 +11,9 @@ def create_table():
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS habits (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
+            name TEXT UNIQUE NOT NULL,
             description TEXT NOT NULL,
             priority INTEGER NOT NULL,
-            current_streak INTEGER NOT NULL,
             periodicity TEXT CHECK(periodicity IN ('daily', 'weekly', 'monthly')) NOT NULL,
             created_at TEXT NOT NULL
         );
