@@ -2,8 +2,10 @@ from typing import *
 from database_api import *
 from analytics import longest_streak, max_overall_streak
 
+
 def press_enter(msg: str = "Press enter to continue..."):
     input(msg)
+
 
 def prompt_priority() -> int:
     while True:
@@ -11,6 +13,7 @@ def prompt_priority() -> int:
         if p in {"1", "2", "3", "4", "5"}:
             return int(p)
         print("Invalid priority. Please enter a number 1–5.")
+
 
 def prompt_periodicity() -> str:
     valid = {"daily", "weekly", "monthly"}
@@ -20,16 +23,19 @@ def prompt_periodicity() -> str:
             return per
         print("Invalid periodicity. Choose: daily, weekly, or monthly.")
 
+
 def show_menu() -> str:
     print("Welcome to the Habit Tracker!")
     print("1) Create Habit")
     print("2) View Habit")
     print("3) View all Habits")
     print("4) Check Habit Off")
-    print("5) Remove Habit")
-    print("6) Show Habit Analytics")
-    print("7) Exit")
+    print("5) Show all Habits checked off Today")
+    print("6) Remove Habit")
+    print("7) Show Habit Analytics")
+    print("8) Exit")
     return input("Choose: ").strip()
+
 
 def create_habit_logic():
     name = input("Enter Habit Name: ").strip()
@@ -37,13 +43,13 @@ def create_habit_logic():
     priority = prompt_priority()
     periodicity = prompt_periodicity()
     create_habit(name, description, priority, periodicity)
-    press_enter()
+
 
 def view_habit_logic():
     habit_key = input("Enter Habit ID or Name: ").strip()
     h = get_habit(habit_key)
     print(h if h else "Habit not found.")
-    press_enter()
+
 
 def list_habits_logic():
     habits = get_all_habits()
@@ -52,17 +58,58 @@ def list_habits_logic():
     else:
         for h in habits:
             print(h)
-    press_enter()
+
 
 def check_off_logic():
-    habit_name = input("Enter Habit Name to check off: ").strip()
-    check_off_habit(habit_name)
-    press_enter()
+    print("Habits already checked today:")
+
+    today = datetime.now().date().isoformat()
+    with create_connection() as connection:
+        cursor = connection.cursor()
+        cursor.execute("""
+            SELECT DISTINCT habits.name
+            FROM completions
+            JOIN habits ON habits.id = completions.habit_id
+            WHERE substr(completions.completed_at, 1, 10) = ?
+            ORDER BY habits.name
+        """, (today,))
+        rows = cursor.fetchall()
+
+        if not rows:
+            print("(No habits checked today)")
+        else:
+            for (name,) in rows:
+                print(f"  - {name}")
+
+        list_habits_logic()
+        habit_name = input("Enter Habit Name to check off: ").strip()
+        check_off_habit(habit_name)
+
+
+def show_all_checked_off_logic():
+    print("All habits checked today:")
+    today = datetime.now().date().isoformat()
+
+    with create_connection() as connection:
+        cursor = connection.cursor()
+        cursor.execute("""SELECT DISTINCT habits.name 
+                       FROM completions 
+                       JOIN habits ON habits.id = completions.habit_id 
+                       WHERE substr(completions.completed_at, 1,10) = ? 
+                       ORDER BY habits.name
+                       """, (today,))
+        rows = cursor.fetchall()
+        if not rows:
+            print("(No habits checked today)")
+        else:
+            for (name,) in rows:
+                print(f"  - {name}")
+
 
 def remove_habit_logic():
     habit_name = input("Enter Name of the Habit to be removed: ").strip()
     remove_habit(habit_name)
-    press_enter()
+
 
 def analytics_logic():
     habits = get_all_habits()
@@ -76,7 +123,6 @@ def analytics_logic():
             plural = "" if streak == 1 else "s"
             print(f"  - {h.name}: {streak} {unit}{plural} streak")
         print(f"Longest Overall Streak: {max_overall_streak()}")
-    press_enter()
 
 
 def run_cli():
@@ -86,21 +132,24 @@ def run_cli():
         "2": view_habit_logic,
         "3": list_habits_logic,
         "4": check_off_logic,
-        "5": remove_habit_logic,
-        "6": analytics_logic,
+        "5": show_all_checked_off_logic,
+        "6": remove_habit_logic,
+        "7": analytics_logic,
     }
 
     while True:
         choice = show_menu()
-        if choice == "7":
+        if choice == "8":
             print("Goodbye!")
             break
 
         action = actions.get(choice)
         if action:
             action()
+            press_enter()
         else:
             print("Invalid choice. Please select 1–7.")
+
 
 if __name__ == "__main__":
     try:
