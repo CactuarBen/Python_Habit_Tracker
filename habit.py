@@ -33,5 +33,3 @@ class Habit:
     @property
     def created_at(self):
         return self.__created_at
-
-
