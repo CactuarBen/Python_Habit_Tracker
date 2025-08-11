@@ -8,9 +8,9 @@ def longest_streak(habit):
     if not completions:
         return 0  # no streak if no completions
 
-    if habit.periodicity() == 'daily':
+    if habit.periodicity == 'daily':
         delta = timedelta(days=1)
-    elif habit.periodicity() == 'weekly':
+    elif habit.periodicity == 'weekly':
         delta = timedelta(weeks=1)
     else:
         delta = relativedelta(months=1)
@@ -20,7 +20,7 @@ def longest_streak(habit):
     previous_streak = completions[0]
 
     for current_streak in completions[1:]:
-        if habit.periodicity() in ['daily', 'weekly']:
+        if habit.periodicity in ['daily', 'weekly']:
             if current_streak - previous_streak <= delta + timedelta(hours=12):
                 streak += 1
             else:
@@ -41,9 +41,12 @@ def all_habit_names():
     return list(map(lambda h: h.name, get_all_habits()))
 
 def habits_by_periodicity(periodicity):
-    list(map(lambda h: h.name, get_habits_by_periodicity(periodicity)))
-    rows = cursor.fetchall()
-    return [Habit(id=r[0], name=r[1], description=r[2], priority=r[3], periodicity=r[4], created_at=r[5]) for r in rows]
+    items = get_habits_by_periodicity(periodicity)
+    if not items:
+        return []
+    if isinstance(items, list):
+        return [getattr(x, 'name', x[1]) for x in items]
+    return [getattr(items, 'name', items[1])]
 
 def max_overall_streak():
     return reduce(lambda acc, h: max(acc, longest_streak(h)), get_all_habits(), 0)
