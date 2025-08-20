@@ -2,19 +2,26 @@ import sqlite3
 
 DATABASE = 'habits.db'
 
+
 def create_connection():
+    """
+    Connects to the database.
+    """
     return sqlite3.connect(DATABASE)
 
+
 def create_table():
+    """
+    Creates a table in the database, unless it already exists.
+    """
     with create_connection() as connection:
         cursor = connection.cursor()
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS habits (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
+            name TEXT UNIQUE NOT NULL,
             description TEXT NOT NULL,
             priority INTEGER NOT NULL,
-            current_streak INTEGER NOT NULL,
             periodicity TEXT CHECK(periodicity IN ('daily', 'weekly', 'monthly')) NOT NULL,
             created_at TEXT NOT NULL
         );
