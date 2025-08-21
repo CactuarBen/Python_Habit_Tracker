@@ -5,6 +5,7 @@ Habit Tracker Backend written in Python that runs in CLI
 1) Either clone the repository or download the zip archive 
 2) Open the project in the IDE of your preference (make sure your path to the project is correct)
 3) Open the terminal and execute the command: ``python command_line_interface.py``
+- Extra: You can now connect to the habits.db that was created and run an SQL script from "sample data" to populate the database with mock data
 4) You will be greeted by the CLI and you will see the options to choose from
 ```
 Welcome to the Habit Tracker!
