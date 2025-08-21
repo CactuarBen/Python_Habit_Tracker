@@ -110,7 +110,8 @@ def show_all_checked_off_logic():
         if not rows:
             print("(No habits checked today)")
         else:
-            for (name) in rows:
+            for (name, ) in rows:
+                name = name.strip().title()
                 print(f"  - {name}")
 
 
