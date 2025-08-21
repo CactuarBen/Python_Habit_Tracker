@@ -1,0 +1,6 @@
+1) Add a visualisation for checked habits - done, shows the habits you've done today
+2) Make it possible to print all checked habits - implemented show_all_checked_off_logic() that does that
+3) Do not allow to check the habit that was already checked today - implemented in the check_off_habit(name) function
+4) Apply black formatting and isort - added a pylint to run formatting
+5) Change analytics.py to make the functions follow the functional programming paradigm and test them - the functions now work
+6) Add extensive logs and comments - return type hinting and docstring was added
