@@ -94,11 +94,11 @@ def update_habit(name):
 
 def remove_habit(name):
     """
-    Removes a habit.
+    Removes a habit, no warning.
     """
     with create_connection() as connection:
         cursor = connection.cursor()
-        cursor.execute("SELECT id FROM habits WHERE name = ?", (name,))
+        cursor.execute("SELECT id FROM habits WHERE lower(name) = ?", (name.lower(),))
         row = cursor.fetchone()
         if row is None:
             print(f"Habit '{name}' not found.")
@@ -157,7 +157,6 @@ def check_off_habit(name):
             print(f"Habit '{name}' already checked.")
             return
 
-        print(row)
         habit_id = row[0]
         cursor.execute("INSERT INTO completions (habit_id, completed_at) VALUES (?, ?)",
                        (habit_id, datetime.now().replace(microsecond=0).isoformat()))
