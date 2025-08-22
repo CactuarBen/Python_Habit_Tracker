@@ -152,7 +152,7 @@ def current_streaks_logic():
     for habit in habits:
         streak = current_streak(habit)
         unit = "day" if habit.periodicity == "daily" else ("week" if habit.periodicity == "weekly" else "month")
-        plural = "" if streak == 1 else "streak"
+        plural = "" if streak == 1 else "s"
         print(f"  - {habit.name}: {streak} {unit}{plural} current")
 
 
