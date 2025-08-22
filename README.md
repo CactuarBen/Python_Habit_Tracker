@@ -119,3 +119,10 @@ Daily habits:
   - Meditation
 ```
 14) Write "11" to exit
+
+## Extra:
+If you wanted to run tests, navigate to the same director and run
+```
+pytest tests.py
+```
+Via the terminal
